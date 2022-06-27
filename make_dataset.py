@@ -1,36 +1,35 @@
-import  h5py
-import  scipy.io as io
-import PIL.Image as Image
-import numpy as np
+import torch
+import logging
+from crowd.models.vgg import vgg19
+from PIL import Image
+from torchvision.utils import save_image
 import os
-import glob
-from matplotlib import pyplot as plt
-from scipy.ndimage.filters import gaussian_filter
-from matplotlib import cm as CM
-from image import *
+import numpy as np
+from tqdm import tqdm
+from pathlib import Path
+from torchvision import transforms
+import torchvision.transforms.functional as F
 
-# root is the path to ShanghaiTech dataset
-root=''
+DATA_DIR = '/home/toshiba_pc/Masaüstü/ME/crowd'    #modify it according to your data dir
+CSV_FILE_PATH='/home/toshiba_pc/Masaüstü/ME/crowd' #modify it according to your data dir
 
-part_B_train = os.path.join(root,'part_B_final/train_data','images')
-part_B_test = os.path.join(root,'part_B_final/test_data','images')
-path_sets = [part_B_train,part_B_test]
-
-
-img_paths  = []
-for path in path_sets:
-    for img_path in glob.glob(os.path.join(path, '*.jpg')):
-        img_paths.append(img_path)
-
-for  img_path  in img_paths:
-    print img_path
-    mat = io.loadmat(img_path.replace('.jpg','.mat').replace('images','ground_truth').replace('IMG_','GT_IMG_'))
-    img= plt.imread(img_path)
-    k = np.zeros((img.shape[0],img.shape[1]))
-    gt = mat["image_info"][0,0][0,0][0]
-    for i in range(0,len(gt)):
-        if int(gt[i][1])<img.shape[0] and int(gt[i][0])<img.shape[1]:
-            k[int(gt[i][1]),int(gt[i][0])]=1
-    k = gaussian_filter(k,15)
-    with h5py.File(img_path.replace('.jpg','.h5').replace('images','ground_truth'), 'w') as hf:
-            hf['density'] = k
+def prepare_image_list():
+    out_file_list = []
+    sample_paths = open(CSV_FILE_PATH).readlines()
+    sample_paths.sort()
+    for sample_dir_path in sample_paths:
+        file_list = []
+        sample_dir_path = sample_dir_path.strip()
+        for f in sorted(os.listdir(os.path.join(DATA_DIR, sample_dir_path))):
+            if f.split('.')[-1] in ['jpg', 'jpeg', 'png']:
+                file_list.append(os.path.join(sample_dir_path, f))
+        if len(file_list) < MIN_CLIP_LEN:
+            print('ERROR !!!')
+            print('len(file_list) < self.min_clip_len')
+            exit()
+        s_start = 0
+        s_end = len(file_list) - 1
+        inx_list = [round(i) for i in np.linspace(s_start, s_end, NUM_FRAMES)]
+        file_list = [file_list[i] for i in inx_list]
+        out_file_list.append(file_list)
+    return out_file_list
