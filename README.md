@@ -75,7 +75,7 @@ Older one
  
  Correction one 
  
- &emsp;1 The correction is made for Venice dataset. Validation and train sets are splitted in advance, then used. Python version upgraded from 2.7 to >   3.7. Some corrections explained with notes in the codes are available. Codes are designed to work with only venice dataset.
+ &emsp;1. The correction is made for Venice dataset. Validation and train sets are splitted in advance, then used. Python version upgraded from 2.7 to >   3.7. Some corrections explained with notes in the codes are available. Codes are designed to work with only venice dataset.
  
 ## Citing
 
