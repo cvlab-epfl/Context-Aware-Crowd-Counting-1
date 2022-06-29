@@ -19,6 +19,7 @@ import cv2
 import dataset
 import time
 
+#Whether cpu or gpu depending on user preference
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 parser = argparse.ArgumentParser(description='PyTorch CANNet')
