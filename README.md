@@ -63,6 +63,7 @@ The dataset is in [GoogleDrive](https://drive.google.com/file/d/1DssuCcnhMbeOtpj
 
 ## Notes
 Older one
+
 &emsp;1. This is the implementation for ShanghaiTech part B, the pretrained model is in [GoogleDrive](https://drive.google.com/file/d/1meuY_nfcABvsPFG1rXZEpAxcjnk0L9M1/view?usp=sharing) with MAE=7.5
 
 
@@ -73,7 +74,8 @@ Older one
  &emsp;4. For the selection of train/val dataset, we follow the same setting as previous work, you could find it [here](https://github.com/leeyeehoo/CSRNet-pytorch)
  
  Correction one 
- ¾emsp; The correction is made for Venice dataset. Validation and train sets are splitted in advance, then used. Python version upgraded from 2.7 to > 3.7. Some corrections explained with notes in the codes are available. Codes are designed to work with only venice dataset.
+ 
+ &emsp;1 The correction is made for Venice dataset. Validation and train sets are splitted in advance, then used. Python version upgraded from 2.7 to >   3.7. Some corrections explained with notes in the codes are available. Codes are designed to work with only venice dataset.
  
 ## Citing
 
