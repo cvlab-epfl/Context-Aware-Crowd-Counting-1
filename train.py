@@ -19,6 +19,9 @@ import cv2
 import dataset
 import time
 
+#Whether cpu or gpu depending on user preference
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 parser = argparse.ArgumentParser(description='PyTorch CANNet')
 
 parser.add_argument('train_json', metavar='TRAIN',
@@ -34,10 +37,10 @@ def main():
 
     args = parser.parse_args()
     args.lr = 1e-4
-    args.batch_size    = 26
+    args.batch_size    = 5
     args.decay         = 5*1e-4
     args.start_epoch   = 0
-    args.epochs = 1000
+    args.epochs = 50
     args.workers = 4
     args.seed = int(time.time())
     args.print_freq = 4
@@ -50,9 +53,8 @@ def main():
 
     model = CANNet()
 
-    model = model.cuda()
-
-    criterion = nn.MSELoss(size_average=False).cuda()
+    model = model.to(device)	
+    criterion = nn.MSELoss(size_average=False).to(device)
 
     optimizer = torch.optim.Adam(model.parameters(), args.lr,
                                     weight_decay=args.decay)
@@ -84,34 +86,35 @@ def train(train_list, model, criterion, optimizer, epoch):
                    ]),
                        train=True,
                        seen=model.seen,
-                       batch_size=args.batch_size,
-                       num_workers=args.workers),
-        batch_size=args.batch_size)
+                       batch_size=args.batch_size
+                       ),
+        batch_size=args.batch_size) #num_workers=args.workers after args.batch_size
+
     print('epoch %d, processed %d samples, lr %.10f' % (epoch, epoch * len(train_loader.dataset), args.lr))
 
     model.train()
+
     end = time.time()
 
     for i,(img, target)in enumerate(train_loader):
         data_time.update(time.time() - end)
-
-        img = img.cuda()
+        print(img,target)
+	
+        img = img.to(device)   #.cuda()
         img = Variable(img)
         output = model(img)[:,0,:,:]
 
-        target = target.type(torch.FloatTensor).cuda()
+        target = target.type(torch.FloatTensor).to(device)  #.cuda()
         target = Variable(target)
-
         loss = criterion(output, target)
 
         losses.update(loss.item(), img.size(0))
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
-
         batch_time.update(time.time() - end)
         end = time.time()
-
+        
         if i % args.print_freq == 0:
             print('Epoch: [{0}][{1}/{2}]\t'
                   'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
@@ -138,12 +141,12 @@ def validate(val_list, model, criterion):
 
     for i,(img, target) in enumerate(val_loader):
         h,w = img.shape[2:4]
-        h_d = h/2
-        w_d = w/2
-        img_1 = Variable(img[:,:,:h_d,:w_d].cuda())
-        img_2 = Variable(img[:,:,:h_d,w_d:].cuda())
-        img_3 = Variable(img[:,:,h_d:,:w_d].cuda())
-        img_4 = Variable(img[:,:,h_d:,w_d:].cuda())
+        h_d = int(h/2)
+        w_d = int(w/2)
+        img_1 = Variable(img[:,:,:h_d,:w_d].to(device))
+        img_2 = Variable(img[:,:,:h_d,w_d:].to(device))
+        img_3 = Variable(img[:,:,h_d:,:w_d].to(device))
+        img_4 = Variable(img[:,:,h_d:,w_d:].to(device))
         density_1 = model(img_1).data.cpu().numpy()
         density_2 = model(img_2).data.cpu().numpy()
         density_3 = model(img_3).data.cpu().numpy()

@@ -24,7 +24,7 @@ that are close to the ground truth.
 ## Installation
 PyTorch 0.4.1
 
-Python 2.7
+Python 2.7 version upgraded to > Python 3.7
 
 ## Dataset
 
@@ -36,14 +36,15 @@ Dropbox: [link](https://www.dropbox.com/s/fipgjqxl7uj8hd5/ShanghaiTech.zip?dl=0)
 &emsp;3. Use create_json.py to generate the json file which contains the path to the images.
 
 ## Training
-In command line:
+In command line(with venice dataset):
 
 ```
 python train.py train.json val.json
 
 ``` 
 
-The json files here are generated from previous step (Dataset. 3.)
+The json files here are generated from previous step (Dataset. 3.) 
+If you want to create new validation and train sets, make sure changing your path to the images.
 
 ## Tesing
 &emsp;1. Modify the "test.py", make sure the path is correct.
@@ -56,9 +57,12 @@ python test.py
 ``` 
 
 ## Venice Dataset
-The dataset is in [GoogleDrive](https://drive.google.com/file/d/15PUf7C3majy-BbWJSSHaXUlot0SUh3mJ/view).
+In case of any conflict with above two datasets, the codes are functioning with Venice dataset in the link below.
+
+The dataset is in [GoogleDrive](https://drive.google.com/file/d/1DssuCcnhMbeOtpjAF5dETC6759sqHL7O/view?usp=sharing).
 
 ## Notes
+Older one
 
 &emsp;1. This is the implementation for ShanghaiTech part B, the pretrained model is in [GoogleDrive](https://drive.google.com/file/d/1meuY_nfcABvsPFG1rXZEpAxcjnk0L9M1/view?usp=sharing) with MAE=7.5
 
@@ -68,6 +72,10 @@ The dataset is in [GoogleDrive](https://drive.google.com/file/d/15PUf7C3majy-BbW
  &emsp;3. For some dataset which training images have different size, we set batch size to 1, like ShanghaiTech part A. For others, you could set your batch size according to you GPU memory, but the batch size may affect your model accuracy during training.
 
  &emsp;4. For the selection of train/val dataset, we follow the same setting as previous work, you could find it [here](https://github.com/leeyeehoo/CSRNet-pytorch)
+ 
+ Correction one 
+ 
+ &emsp;1. The correction is made for Venice dataset. Validation and train sets are splitted in advance, then used. Python version upgraded from 2.7 to >   3.7. Some corrections explained with notes in the codes are available. Codes are designed to work with only venice dataset.
  
 ## Citing
 
@@ -110,3 +118,4 @@ year = {2019}
 
 For any questions regard this paper/code, please directly contact [Weizhe Liu](mailto:weizhe.liu@epfl.ch).
 
+For upgraded version, you may contact [Ibrahim YAZICI](mailto:yaziciibrahim88@gmail.com)
