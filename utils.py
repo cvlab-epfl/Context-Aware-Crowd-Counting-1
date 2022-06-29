@@ -3,6 +3,7 @@ import torch
 import shutil
 import numpy as np
 
+#Network ops
 def save_net(fname, net):
     with h5py.File(fname, 'w') as h5f:
         for k, v in net.state_dict().items():
